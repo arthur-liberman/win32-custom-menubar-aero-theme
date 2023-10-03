@@ -97,20 +97,12 @@ bool UAHWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam, LRESULT* 
         int iBackgroundStateID = 0;
         {
             HWND hWndActive = GetActiveWindow();
-            if ((pUDMI->dis.itemState & ODS_INACTIVE) || (pUDMI->dis.itemState & ODS_DEFAULT)) {
-                // normal display
-                iTextStateID = MBI_NORMAL;
-                iBackgroundStateID = MBI_NORMAL;
+            if ((pUDMI->dis.itemState & ODS_GRAYED) || (pUDMI->dis.itemState & ODS_DISABLED)) {
+                // disabled / grey text
+                iTextStateID = MBI_DISABLED;
+                iBackgroundStateID = MBI_DISABLED;
             }
-            if ((hWndActive == hWnd) && (pUDMI->dis.itemState & ODS_HOTLIGHT)) {
-                // hot tracking
-                iTextStateID = MBI_HOT;
-                iBackgroundStateID = MBI_HOT;
-
-                pbrBackground = &g_brItemBackgroundHot;
-                pbrBorder = &g_brItemBorder;
-            }
-            if ((hWndActive == hWnd) && (pUDMI->dis.itemState & ODS_SELECTED)) {
+            else if ((hWndActive == hWnd) && (pUDMI->dis.itemState & ODS_SELECTED)) {
                 // clicked
                 iTextStateID = MBI_PUSHED;
                 iBackgroundStateID = MBI_PUSHED;
@@ -118,10 +110,18 @@ bool UAHWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam, LRESULT* 
                 pbrBackground = &g_brItemBackgroundSelected;
                 pbrBorder = &g_brItemBorder;
             }
-            if ((pUDMI->dis.itemState & ODS_GRAYED) || (pUDMI->dis.itemState & ODS_DISABLED)) {
-                // disabled / grey text
-                iTextStateID = MBI_DISABLED;
-                iBackgroundStateID = MBI_DISABLED;
+            else if ((hWndActive == hWnd) && (pUDMI->dis.itemState & ODS_HOTLIGHT)) {
+                // hot tracking
+                iTextStateID = MBI_HOT;
+                iBackgroundStateID = MBI_HOT;
+
+                pbrBackground = &g_brItemBackgroundHot;
+                pbrBorder = &g_brItemBorder;
+            }
+            else if ((pUDMI->dis.itemState & ODS_INACTIVE) || (pUDMI->dis.itemState & ODS_DEFAULT)) {
+                // normal display
+                iTextStateID = MBI_NORMAL;
+                iBackgroundStateID = MBI_NORMAL;
             }
             if (pUDMI->dis.itemState & ODS_NOACCEL) {
                 dwFlags |= DT_HIDEPREFIX;
