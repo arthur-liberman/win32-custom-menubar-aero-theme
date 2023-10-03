@@ -96,12 +96,13 @@ bool UAHWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam, LRESULT* 
         int iTextStateID = 0;
         int iBackgroundStateID = 0;
         {
+            HWND hWndActive = GetActiveWindow();
             if ((pUDMI->dis.itemState & ODS_INACTIVE) || (pUDMI->dis.itemState & ODS_DEFAULT)) {
                 // normal display
                 iTextStateID = MBI_NORMAL;
                 iBackgroundStateID = MBI_NORMAL;
             }
-            if (pUDMI->dis.itemState & ODS_HOTLIGHT) {
+            if ((hWndActive == hWnd) && (pUDMI->dis.itemState & ODS_HOTLIGHT)) {
                 // hot tracking
                 iTextStateID = MBI_HOT;
                 iBackgroundStateID = MBI_HOT;
@@ -109,7 +110,7 @@ bool UAHWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam, LRESULT* 
                 pbrBackground = &g_brItemBackgroundHot;
                 pbrBorder = &g_brItemBorder;
             }
-            if (pUDMI->dis.itemState & ODS_SELECTED) {
+            if ((hWndActive == hWnd) && (pUDMI->dis.itemState & ODS_SELECTED)) {
                 // clicked
                 iTextStateID = MBI_PUSHED;
                 iBackgroundStateID = MBI_PUSHED;
